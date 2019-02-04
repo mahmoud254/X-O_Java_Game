@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package x_o_game;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
@@ -50,42 +51,44 @@ import javafx.util.Duration;
  * @author Dell
  */
 public class X_O_Game extends Application {
-
+    public int posCell;
     Scene scene1, scene2, scene3, scene4;
-    Image user_image= null;
-    Image user_image2= null;
-    Image computer_image= null;
-    Image backgroundImage1= null;
-    Image backgroundImage2= null;
-    Image backgroundImage3= null;
-    Image backgroundImage4= null;
+    Image user_image = null;
+    Image user_image2 = null;
+    Image computer_image = null;
+    Image backgroundImage1 = null;
+    Image backgroundImage2 = null;
+    Image backgroundImage3 = null;
+    Image backgroundImage4 = null;
     BackgroundImage background1;
     BackgroundImage background2;
     BackgroundImage background3;
     BackgroundImage background4;
-    Color c=Color.rgb(153, 51, 255,0.5);
-    Color c2=Color.rgb(255, 255, 204,1);   
-    Color c3=Color.rgb(255, 51, 153,1); 
-    
-    
+    Button playVsFriendBtn;
+    ListView playersList;
+    Color c = Color.rgb(153, 51, 255, 0.5);
+    Color c2 = Color.rgb(255, 255, 204, 1);
+    Color c3 = Color.rgb(255, 51, 153, 1);
+    String cwd;
+
     @Override
     public void start(Stage primaryStage) {
 
-        String cwd = System.getProperty("user.dir");
+        cwd = System.getProperty("user.dir");
 //        audio
         Media media = new Media(getClass().getResource("\\main.mp3").toExternalForm()); //replace /Movies/test.mp3 with your file
-        MediaPlayer player = new MediaPlayer(media); 
+        MediaPlayer player = new MediaPlayer(media);
         player.setCycleCount(MediaPlayer.INDEFINITE);
-        player.play();      
+        player.play();     
 //        reading images
         try {
-            backgroundImage1=new Image(new FileInputStream(cwd+"\\images\\bg.jpg"));
-            backgroundImage2=new Image(new FileInputStream(cwd+"\\images\\bg5.jpg"));
-            backgroundImage3=new Image(new FileInputStream(cwd+"\\images\\bg3.jpg"));
-            backgroundImage4=new Image(new FileInputStream(cwd+"\\images\\bg7.jpg"));
+            backgroundImage1 = new Image(new FileInputStream(cwd + "\\images\\bg.jpg"));
+            backgroundImage2 = new Image(new FileInputStream(cwd + "\\images\\bg5.jpg"));
+            backgroundImage3 = new Image(new FileInputStream(cwd + "\\images\\bg3.jpg"));
+            backgroundImage4 = new Image(new FileInputStream(cwd + "\\images\\bg7.jpg"));
             background1 = new BackgroundImage(backgroundImage1,
                     BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));            
+                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));
             background2 = new BackgroundImage(backgroundImage2,
                     BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));
@@ -94,10 +97,10 @@ public class X_O_Game extends Application {
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));
             background4 = new BackgroundImage(backgroundImage4,
                     BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));          
+                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(X_O_Game.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
 //        first scene components
         TextField emailField = new TextField();
         TextField passwordField = new TextField();
@@ -130,35 +133,27 @@ public class X_O_Game extends Application {
 
         Button playVsComputerBtn = new Button();
         playVsComputerBtn.setText("play VS computer");
-        Button playVsFriendBtn = new Button();
+        playVsFriendBtn = new Button();
         playVsFriendBtn.setText("play VS friend");
         playVsFriendBtn.setDisable(true);
-        ListView playersList = new ListView();
-        Label p1 = null;
-        try {
+        playersList = new ListView();
+        //for testing listingPlayrs function
+        String[] arr = {"ali", "amr", "mahmod", "bassant", "yasmin"};
 
-            p1 = new Label("player1",
-                    new ImageView(new Image(new FileInputStream(cwd+"\\images\\online.png"), 10, 10, false, false)));
-            p1.setOnMouseClicked((MouseEvent event) -> {
-                playVsFriendBtn.setDisable(false);
-            });
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(X_O_Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        listingPlayrs(arr, "online");
+        listingPlayrs(arr, "offline");
 
-        p1.setContentDisplay(ContentDisplay.RIGHT);
-        playersList.getItems().addAll(p1, "player2");
         playersList.setMaxWidth(100);
         Menu levels = new Menu("level");
         MenuItem easy = new MenuItem("easy");
         MenuItem hard = new MenuItem("hard");
-        levels.getItems().addAll(easy,hard);
+        levels.getItems().addAll(easy, hard);
         MenuBar bar = new MenuBar();
         bar.getMenus().addAll(levels);
         GridPane playBtns = new GridPane();
-        playBtns.add(playVsComputerBtn,0,0);
-        playBtns.add(playVsFriendBtn,1,0);
-        playBtns.add(bar,0,1);
+        playBtns.add(playVsComputerBtn, 0, 0);
+        playBtns.add(playVsFriendBtn, 1, 0);
+        playBtns.add(bar, 0, 1);
         playBtns.setAlignment(Pos.CENTER);
         BorderPane root2 = new BorderPane();
         root2.setLeft(playersList);
@@ -167,53 +162,54 @@ public class X_O_Game extends Application {
 //      third scene
 
         try {
-            user_image = new Image(new FileInputStream(cwd+"\\images\\A.png"),
+            user_image = new Image(new FileInputStream(cwd + "\\images\\A.png"),
                     100, 100, false, false);
-            user_image2 = new Image(new FileInputStream(cwd+"\\images\\B.png"),
+            user_image2 = new Image(new FileInputStream(cwd + "\\images\\B.png"),
                     100, 100, false, false);
-            computer_image = new Image(new FileInputStream(cwd+"\\images\\computer.png"),
+            computer_image = new Image(new FileInputStream(cwd + "\\images\\computer.png"),
                     100, 100, false, false);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(X_O_Game.class.getName()).log(Level.SEVERE, null, ex);
         }
         GridPane GameArea = new GridPane();
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    StackPane box=new StackPane();
-                    Rectangle rect = new Rectangle();  
-                    rect.setX(0f); 
-                    rect.setY(0f); 
-                    rect.setArcWidth(30.0); 
-                    rect.setArcHeight(20.0); 
-                    rect.setWidth(100.0f); 
-                    rect.setHeight(100.0f);
-                    rect.setStrokeWidth(5.0);
-                    rect.setStroke(c2);
-                    rect.setFill(c);
-                    box.getChildren().add(rect);
-                    box.setOnMouseClicked((MouseEvent event) -> {
-                        Line x1=new Line(10,10,90,90);
-                        Line x2=new Line(10,90,90,10);
-                        x1.setStrokeWidth(5.0);
-                        x2.setStrokeWidth(5.0);
-                        StrokeTransition   st1 = new StrokeTransition ();
-                        StrokeTransition   st2 = new StrokeTransition ();
-                        st1.setDuration(Duration.millis(1000)); 
-                        st1.setShape(x1);
-                        st1.setFromValue(Color.TRANSPARENT);
-                        st1.setToValue(c3);
-                        st1.play();  
-                        st2.setDuration(Duration.millis(1000)); 
-                        st2.setShape(x2);
-                        st2.setFromValue(Color.TRANSPARENT);
-                        st2.setToValue(c3);
-                        st2.play();                        
-                        box.getChildren().addAll(x1,x2);
-                    });
-                    GameArea.add(box, j, i);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                StackPane box = new StackPane();
+                Rectangle rect = new Rectangle();
+                rect.setX(0f);
+                rect.setY(0f);
+                rect.setArcWidth(30.0);
+                rect.setArcHeight(20.0);
+                rect.setWidth(100.0f);
+                rect.setHeight(100.0f);
+                rect.setStrokeWidth(5.0);
+                rect.setStroke(c2);
+                rect.setFill(c);
+                box.getChildren().add(rect);
+                box.setOnMouseClicked((MouseEvent event) -> {
+                 
+                    Line x1 = new Line(10, 10, 90, 90);
+                    Line x2 = new Line(10, 90, 90, 10);
+                    x1.setStrokeWidth(5.0);
+                    x2.setStrokeWidth(5.0);
+                    StrokeTransition st1 = new StrokeTransition();
+                    StrokeTransition st2 = new StrokeTransition();
+                    st1.setDuration(Duration.millis(1000));
+                    st1.setShape(x1);
+                    st1.setFromValue(Color.TRANSPARENT);
+                    st1.setToValue(c3);
+                    st1.play();
+                    st2.setDuration(Duration.millis(1000));
+                    st2.setShape(x2);
+                    st2.setFromValue(Color.TRANSPARENT);
+                    st2.setToValue(c3);
+                    st2.play();
+                    box.getChildren().addAll(x1, x2);
+                });
+                GameArea.addColumn(i,box);
 
-                }
             }
+        }
 
         GameArea.setAlignment(Pos.CENTER);
         GameArea.setHgap(10);
@@ -227,72 +223,71 @@ public class X_O_Game extends Application {
         chatItems.getChildren().addAll(sentMessage, recievedMessage);
         chatItems.setOrientation(Orientation.VERTICAL);
         chatPane.setContent(chatItems);
-    //        players Data Area 
+        //        players Data Area 
         FlowPane playersArea = new FlowPane();
-        FlowPane topPane=new FlowPane();
-        ImageView user1Icon=new ImageView(user_image);
-        ImageView user2Icon=new ImageView(user_image2);
-        topPane.getChildren().addAll(user1Icon,user2Icon);
+        FlowPane topPane = new FlowPane();
+        ImageView user1Icon = new ImageView(user_image);
+        ImageView user2Icon = new ImageView(user_image2);
+        topPane.getChildren().addAll(user1Icon, user2Icon);
         topPane.setHgap(300);
         BorderPane root3 = new BorderPane();
         root3.setCenter(GameArea);
         root3.setBottom(chatPane);
         root3.setTop(topPane);
-        root3.setBackground(new Background(background3)); 
+        root3.setBackground(new Background(background3));
 //        fourth scene
         GridPane GameArea2 = new GridPane();
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    StackPane box=new StackPane();
-                    Rectangle rect = new Rectangle();  
-                    rect.setX(0f); 
-                    rect.setY(0f); 
-                    rect.setArcWidth(30.0); 
-                    rect.setArcHeight(20.0); 
-                    rect.setWidth(100.0f); 
-                    rect.setHeight(100.0f);
-                    rect.setStrokeWidth(5.0);
-                    rect.setStroke(c2);
-                    rect.setFill(c);
-                    box.getChildren().add(rect);
-                    box.setOnMouseClicked((MouseEvent event) -> {
-                        Line x1=new Line(10,10,90,90);
-                        Line x2=new Line(10,90,90,10);
-                        x1.setStrokeWidth(5.0);
-                        x2.setStrokeWidth(5.0);
-                        StrokeTransition   st1 = new StrokeTransition ();
-                        StrokeTransition   st2 = new StrokeTransition ();
-                        st1.setDuration(Duration.millis(1000)); 
-                        st1.setShape(x1);
-                        st1.setFromValue(Color.TRANSPARENT);
-                        st1.setToValue(c3);
-                        st1.play();  
-                        st2.setDuration(Duration.millis(1000)); 
-                        st2.setShape(x2);
-                        st2.setFromValue(Color.TRANSPARENT);
-                        st2.setToValue(c3);
-                        st2.play();                        
-                        box.getChildren().addAll(x1,x2);
-                        
-                    });
-                    GameArea2.add(box, j, i);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                StackPane box = new StackPane();
+                Rectangle rect = new Rectangle();
+                rect.setX(0f);
+                rect.setY(0f);
+                rect.setArcWidth(30.0);
+                rect.setArcHeight(20.0);
+                rect.setWidth(100.0f);
+                rect.setHeight(100.0f);
+                rect.setStrokeWidth(5.0);
+                rect.setStroke(c2);
+                rect.setFill(c);
+                box.getChildren().add(rect);
+                box.setOnMouseClicked((MouseEvent event) -> {
+                    Line x1 = new Line(10, 10, 90, 90);
+                    Line x2 = new Line(10, 90, 90, 10);
+                    x1.setStrokeWidth(5.0);
+                    x2.setStrokeWidth(5.0);
+                    StrokeTransition st1 = new StrokeTransition();
+                    StrokeTransition st2 = new StrokeTransition();
+                    st1.setDuration(Duration.millis(1000));
+                    st1.setShape(x1);
+                    st1.setFromValue(Color.TRANSPARENT);
+                    st1.setToValue(c3);
+                    st1.play();
+                    st2.setDuration(Duration.millis(1000));
+                    st2.setShape(x2);
+                    st2.setFromValue(Color.TRANSPARENT);
+                    st2.setToValue(c3);
+                    st2.play();
+                    box.getChildren().addAll(x1, x2);
 
-                }
+                });
+                GameArea2.add(box, j, i);
+
             }
+        }
 
-      
         GameArea2.setAlignment(Pos.CENTER);
         GameArea2.setHgap(10);
         GameArea2.setVgap(10);
-        FlowPane topPane2=new FlowPane();
-        ImageView userIcon=new ImageView(user_image);
-        ImageView computerIcon=new ImageView(computer_image);
-        topPane2.getChildren().addAll(userIcon,computerIcon);
+        FlowPane topPane2 = new FlowPane();
+        ImageView userIcon = new ImageView(user_image);
+        ImageView computerIcon = new ImageView(computer_image);
+        topPane2.getChildren().addAll(userIcon, computerIcon);
         topPane2.setHgap(300);
         BorderPane root4 = new BorderPane();
         root4.setCenter(GameArea2);
         root4.setTop(topPane2);
-        root4.setBackground(new Background(background4));        
+        root4.setBackground(new Background(background4));
 //        Event Listeners
         signInBtn.setOnAction((ActionEvent event) -> {
             primaryStage.setScene(scene2);
@@ -321,5 +316,35 @@ public class X_O_Game extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    public void listingPlayrs(String[] arrPlayers, String statusOfPlayers) {
+
+        for (int i = 0; i < arrPlayers.length; i++) {
+            Label p = null;
+            try {
+                if (statusOfPlayers.equals("online")) {
+                    p = new Label(arrPlayers[i],
+                            new ImageView(new Image(new FileInputStream(cwd + "\\images\\online.png"), 10, 10, false, false)));
+                    p.setOnMouseClicked((MouseEvent event) -> {
+                        playVsFriendBtn.setDisable(false);
+                    });
+
+                } else {
+                    p = new Label(arrPlayers[i],
+                            new ImageView(new Image(new FileInputStream(cwd + "\\images\\offline.png"), 10, 10, false, false)));
+
+                }
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(X_O_Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            //p.setContentDisplay(ContentDisplay.RIGHT);
+            playersList.getItems().addAll(p);
+
+        }
+
+    }
+    
 
 }

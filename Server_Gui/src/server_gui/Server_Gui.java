@@ -5,7 +5,12 @@
  */
 package server_gui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +20,10 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,7 +39,7 @@ public class Server_Gui extends Application {
 
         Button btnStart = new Button("Start");
         Button btnStop = new Button("Stop");
-        ListView<String> lvList = new ListView<String>();
+        ListView<Label> lvList = new ListView<Label>();
         VBox vbButtons = new VBox();
         BorderPane borderPane = new BorderPane();
 
@@ -57,11 +65,20 @@ public class Server_Gui extends Application {
         vbButtons.setSpacing(10);
         vbButtons.setPadding(new Insets(0, 20, 10, 20));
         vbButtons.getChildren().addAll(btnStart, btnStop);
-
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Player1", "Player2", "Player3",
-                "Player4", "player5");
+        Label l1 = new Label("player1");
+       Label p1;
+        try {
+            p1 = new Label("player1",
+                    new ImageView(new Image(new FileInputStream("E:\\ITI\\16-java\\project TicTocToe\\X-O_Java_Game\\Server_Gui\\online.png"), 10, 10, false, false)));
+        ObservableList<Label> items = FXCollections.observableArrayList(
+                p1
+                );
         lvList.setItems(items);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Server_Gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
         lvList.setMaxHeight(Control.USE_PREF_SIZE);
 
         borderPane.setPadding(new Insets(20, 0, 20, 20));
