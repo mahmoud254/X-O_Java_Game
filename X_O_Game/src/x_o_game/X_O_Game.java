@@ -51,6 +51,7 @@ import javafx.util.Duration;
  * @author Dell
  */
 public class X_O_Game extends Application {
+
     public int posCell;
     Scene scene1, scene2, scene3, scene4;
     Image user_image = null;
@@ -70,6 +71,55 @@ public class X_O_Game extends Application {
     Color c2 = Color.rgb(255, 255, 204, 1);
     Color c3 = Color.rgb(255, 51, 153, 1);
     String cwd;
+    int fieldNum = 0;
+    String insertedType;
+    String[] screenArr;
+    boolean GameOver = false;
+
+    public int myCount(String[] arr, String item) {
+        int count = 0;
+        for (String element : arr) {
+            if (item == element) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    public void gameRules(String[] screenArr) {
+        String[][] rowsArr = new String[3][3];
+        String[][] colsArr = new String[3][3];
+        String[][] crossesArr = new String[2][3];
+        String[] crossArr1 = new String[3];
+        String[] crossArr2 = new String[3];
+        for (int i = 0; i < 3; i++) {
+            String[] rowArr = new String[3];
+            String[] colArr = new String[3];
+            crossArr1[i] = screenArr[i * 4];
+            crossArr2[i] = screenArr[i * 2 + 2];
+            for (int j = 0; j < 3; j++) {
+                rowArr[j] = screenArr[i * 3 + j];
+                colArr[j] = screenArr[i + j * 3];
+            }
+            rowsArr[i] = rowArr;
+            colsArr[i] = colArr;
+        }
+        crossesArr[0] = crossArr1;
+        crossesArr[1] = crossArr2;
+        for (String[] arrElement : rowsArr) {
+            if (myCount(arrElement,"x")==3){this.GameOver=true;};
+            if (myCount(arrElement,"o")==3){this.GameOver=true;};
+        }
+        for (String[] arrElement : colsArr) {
+            if (myCount(arrElement,"x")==3){this.GameOver=true;};
+            if (myCount(arrElement,"o")==3){this.GameOver=true;};
+        }
+        for (String[] arrElement : crossesArr) {
+            if (myCount(arrElement,"x")==3){this.GameOver=true;};
+            if (myCount(arrElement,"o")==3){this.GameOver=true;};
+        }
+        System.out.println(this.GameOver);
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -79,7 +129,7 @@ public class X_O_Game extends Application {
         Media media = new Media(getClass().getResource("\\main.mp3").toExternalForm()); //replace /Movies/test.mp3 with your file
         MediaPlayer player = new MediaPlayer(media);
         player.setCycleCount(MediaPlayer.INDEFINITE);
-        player.play();     
+        player.play();
 //        reading images
         try {
             backgroundImage1 = new Image(new FileInputStream(cwd + "\\images\\bg.jpg"));
@@ -172,8 +222,11 @@ public class X_O_Game extends Application {
             Logger.getLogger(X_O_Game.class.getName()).log(Level.SEVERE, null, ex);
         }
         GridPane GameArea = new GridPane();
+        screenArr = new String[9];
+        insertedType = "x";
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
+                int num=fieldNum;
                 StackPane box = new StackPane();
                 Rectangle rect = new Rectangle();
                 rect.setX(0f);
@@ -187,7 +240,9 @@ public class X_O_Game extends Application {
                 rect.setFill(c);
                 box.getChildren().add(rect);
                 box.setOnMouseClicked((MouseEvent event) -> {
-                 
+                    //send field number through network
+                    screenArr[num] = insertedType;
+                    gameRules(screenArr);
                     Line x1 = new Line(10, 10, 90, 90);
                     Line x2 = new Line(10, 90, 90, 10);
                     x1.setStrokeWidth(5.0);
@@ -206,8 +261,8 @@ public class X_O_Game extends Application {
                     st2.play();
                     box.getChildren().addAll(x1, x2);
                 });
-                GameArea.addColumn(i,box);
-
+                GameArea.addColumn(i, box);
+                fieldNum += 1;
             }
         }
 
@@ -237,8 +292,10 @@ public class X_O_Game extends Application {
         root3.setBackground(new Background(background3));
 //        fourth scene
         GridPane GameArea2 = new GridPane();
+        fieldNum=0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
+                int num=fieldNum;
                 StackPane box = new StackPane();
                 Rectangle rect = new Rectangle();
                 rect.setX(0f);
@@ -252,6 +309,9 @@ public class X_O_Game extends Application {
                 rect.setFill(c);
                 box.getChildren().add(rect);
                 box.setOnMouseClicked((MouseEvent event) -> {
+                    //send field number through network
+                    screenArr[num] = insertedType;
+                    gameRules(screenArr);
                     Line x1 = new Line(10, 10, 90, 90);
                     Line x2 = new Line(10, 90, 90, 10);
                     x1.setStrokeWidth(5.0);
@@ -269,10 +329,9 @@ public class X_O_Game extends Application {
                     st2.setToValue(c3);
                     st2.play();
                     box.getChildren().addAll(x1, x2);
-
                 });
                 GameArea2.add(box, j, i);
-
+                fieldNum+=1;
             }
         }
 
@@ -345,6 +404,5 @@ public class X_O_Game extends Application {
         }
 
     }
-    
 
 }
