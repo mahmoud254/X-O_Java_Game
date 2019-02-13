@@ -5,8 +5,17 @@
  */
 package x_o_game;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.StrokeTransition;
@@ -27,6 +36,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -50,8 +60,14 @@ import javafx.util.Duration;
  *
  * @author Dell
  */
-public class X_O_Game extends Application {
-
+public class X_O_Game extends Application implements Runnable{
+    Vector<StackPane> boxVector = new Vector<StackPane>();
+    Socket mySocket;
+    Thread th;
+    ObjectInputStream in;
+    ObjectOutputStream out;
+    Message m;
+    int id;
     public int posCell;
     Scene scene1, scene2, scene3, scene4;
     Image user_image = null;
@@ -118,12 +134,66 @@ public class X_O_Game extends Application {
             if (myCount(arrElement,"x")==3){this.GameOver=true;};
             if (myCount(arrElement,"o")==3){this.GameOver=true;};
         }
-        System.out.println(this.GameOver);
     }
-
     @Override
-    public void start(Stage primaryStage) {
+     public void init(){
+         System.out.println("hi init");
+            try {
+            mySocket = new Socket("127.0.0.1", 5005);
+            try {
+                out = new ObjectOutputStream(mySocket.getOutputStream());
+                in = new ObjectInputStream(mySocket.getInputStream());
+            } catch (Exception ex) {
+                System.out.println("Error in input stream or print stream");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+            System.out.println("Error in making socket");
 
+        }     
+        th=new Thread(this);
+        th.start();
+        
+     }
+    @Override
+    public void run() {
+        while (true) {
+            try {
+//                    Robot robot = new Robot();
+//                    robot.mouseMove(550, 500);
+//                    robot.mousePress(InputEvent.BUTTON1_MASK );
+//                    robot.mouseRelease(InputEvent.BUTTON1_MASK );
+
+
+            } catch (Exception ex) {
+                System.out.println(ex);
+//                th.stop();
+            }
+        }
+
+    }
+    public void box_filler(StackPane box,int num){
+                    screenArr[num] = insertedType;
+                    gameRules(screenArr);
+                    Line x1 = new Line(10, 10, 90, 90);
+                    Line x2 = new Line(10, 90, 90, 10);
+                    x1.setStrokeWidth(5.0);
+                    x2.setStrokeWidth(5.0);
+                    StrokeTransition st1 = new StrokeTransition();
+                    StrokeTransition st2 = new StrokeTransition();
+                    st1.setDuration(Duration.millis(1000));
+                    st1.setShape(x1);
+                    st1.setFromValue(Color.TRANSPARENT);
+                    st1.setToValue(c3);
+                    st1.play();
+                    st2.setDuration(Duration.millis(1000));
+                    st2.setShape(x2);
+                    st2.setFromValue(Color.TRANSPARENT);
+                    st2.setToValue(c3);
+                    st2.play();
+                    box.getChildren().addAll(x1, x2);}
+    @Override
+    public void start(Stage primaryStage) { 
         cwd = System.getProperty("user.dir");
 //        audio
         Media media = new Media(getClass().getResource("\\main.mp3").toExternalForm()); //replace /Movies/test.mp3 with your file
@@ -239,33 +309,14 @@ public class X_O_Game extends Application {
                 rect.setStroke(c2);
                 rect.setFill(c);
                 box.getChildren().add(rect);
+                boxVector.add(box);
                 box.setOnMouseClicked((MouseEvent event) -> {
-                    //send field number through network
-                    screenArr[num] = insertedType;
-                    gameRules(screenArr);
-                    Line x1 = new Line(10, 10, 90, 90);
-                    Line x2 = new Line(10, 90, 90, 10);
-                    x1.setStrokeWidth(5.0);
-                    x2.setStrokeWidth(5.0);
-                    StrokeTransition st1 = new StrokeTransition();
-                    StrokeTransition st2 = new StrokeTransition();
-                    st1.setDuration(Duration.millis(1000));
-                    st1.setShape(x1);
-                    st1.setFromValue(Color.TRANSPARENT);
-                    st1.setToValue(c3);
-                    st1.play();
-                    st2.setDuration(Duration.millis(1000));
-                    st2.setShape(x2);
-                    st2.setFromValue(Color.TRANSPARENT);
-                    st2.setToValue(c3);
-                    st2.play();
-                    box.getChildren().addAll(x1, x2);
+                   box_filler(box,num); 
                 });
                 GameArea.addColumn(i, box);
                 fieldNum += 1;
             }
         }
-
         GameArea.setAlignment(Pos.CENTER);
         GameArea.setHgap(10);
         GameArea.setVgap(10);
@@ -308,27 +359,9 @@ public class X_O_Game extends Application {
                 rect.setStroke(c2);
                 rect.setFill(c);
                 box.getChildren().add(rect);
+                
                 box.setOnMouseClicked((MouseEvent event) -> {
-                    //send field number through network
-                    screenArr[num] = insertedType;
-                    gameRules(screenArr);
-                    Line x1 = new Line(10, 10, 90, 90);
-                    Line x2 = new Line(10, 90, 90, 10);
-                    x1.setStrokeWidth(5.0);
-                    x2.setStrokeWidth(5.0);
-                    StrokeTransition st1 = new StrokeTransition();
-                    StrokeTransition st2 = new StrokeTransition();
-                    st1.setDuration(Duration.millis(1000));
-                    st1.setShape(x1);
-                    st1.setFromValue(Color.TRANSPARENT);
-                    st1.setToValue(c3);
-                    st1.play();
-                    st2.setDuration(Duration.millis(1000));
-                    st2.setShape(x2);
-                    st2.setFromValue(Color.TRANSPARENT);
-                    st2.setToValue(c3);
-                    st2.play();
-                    box.getChildren().addAll(x1, x2);
+                    box_filler(box,num); 
                 });
                 GameArea2.add(box, j, i);
                 fieldNum+=1;
@@ -349,8 +382,38 @@ public class X_O_Game extends Application {
         root4.setBackground(new Background(background4));
 //        Event Listeners
         signInBtn.setOnAction((ActionEvent event) -> {
-            primaryStage.setScene(scene2);
+            Message mylogin=new Message();
+            mylogin.setType("LogIn");
+            mylogin.setEmail(emailField.getText());
+            mylogin.setPassword(passwordField.getText());
+            Message m=null;
+            try {
+                out.writeObject(mylogin);
+                m=(Message)in.readObject();
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+            if (m.isIsValidUser()){
+            primaryStage.setScene(scene2);}
+            else{primaryStage.setScene(scene1);}
         });
+        signUpBtn.setOnAction((ActionEvent event) -> {
+            Message mySignUp=new Message();
+            mySignUp.setType("SignUp");
+            mySignUp.setEmail(emailField.getText());
+            mySignUp.setPassword(passwordField.getText());
+            Message m=null;
+            try {
+                out.writeObject(mySignUp);
+                m=(Message)in.readObject();
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+            
+            if (m.isIsValidUser()){
+            primaryStage.setScene(scene2);}
+            else{primaryStage.setScene(scene1);}
+        });        
 
         playVsComputerBtn.setOnAction((ActionEvent event) -> {
             primaryStage.setScene(scene4);
