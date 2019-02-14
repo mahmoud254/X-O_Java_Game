@@ -50,7 +50,6 @@ public class Batch1_2 {
                 String pass_login = sc.nextLine();
                 boolean check_both = c.select2(login_str, pass_login);
                 if (check_both) {
-
                     System.out.println("You logged in , Welcom  " + login_str);
                     break;
                 } else {

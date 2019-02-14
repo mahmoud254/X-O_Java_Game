@@ -67,7 +67,13 @@ class ChatHandler extends Thread {
                 m = (Message) in.readObject();
                 //validate email and password for signin/////////////////
                 if (m.getType().equals("LogIn")){
-                    m.setIsValidUser(true);
+                    Crud crud = new Crud();
+                    if (crud.select2(m.getEmail(), m.getPassword())){
+                    m.setIsValidUser(true);                    
+                    }
+                    else{
+                    m.setIsValidUser(false);                    
+                    }                    
                     System.out.println("recieved");
                     out.writeObject(m);
                 }
@@ -75,7 +81,21 @@ class ChatHandler extends Thread {
                 //validate email and password for signUp/////////////////
                 System.out.println(m.getType());
                 if (m.getType().equals("SignUp")){
-                    m.setIsValidUser(true);
+                    Crud crud = new Crud();
+                    SignUp signup = new SignUp();
+                    Operations_db op = new Operations_db();
+                    if (op.check_mail_regex(m.getEmail())) {
+                        if (crud.select1(m.getEmail())){
+                        m.setIsValidUser(false);
+                        }
+                        else{
+                            m.setIsValidUser(true);
+                        }    
+                    }
+                    else{
+                    m.setIsValidUser(false);
+                    }
+                    
                     System.out.println("recieved");
                     out.writeObject(m);
                 }

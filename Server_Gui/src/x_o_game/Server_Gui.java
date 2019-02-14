@@ -105,7 +105,7 @@ public class Server_Gui extends Application implements Runnable{
                 
             }
         });
-        
+         
 
         Scene scene = new Scene(borderPane, 500, 400);
         primaryStage.setTitle("Sever");
