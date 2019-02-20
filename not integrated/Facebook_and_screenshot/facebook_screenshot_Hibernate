@@ -1,0 +1,14 @@
+1- Screenshots : 
+
+In this program we will see how we can take screenshots using a java program and save the screenshot in desired folder.
+We use java.awt.Robot class to capture pixels of screen. It provides method like createScreenCapture which captures the current screen. This method returns captured image as BufferedImage object which can be saved as a file. It also uses ImageIO to save it as PNG image format. Toolkit.getDefaultToolkit().getSize() method is used to get the size of screen.
+
+
+2- Facebook :
+
+The Facebook API is a platform for building applications that are available to the members of the social network of Facebook. The API allows applications to use the social connections and profile information to make applications more involving, and to publish activities to the news feed and profile pages of Facebook, subject to individual users privacy settings. With the API, users can add social context to their applications by utilizing profile, friend, Page, group, photo, and event data. The API uses RESTful protocol and responses are in JSON format.
+
+
+3- Hibernate : 
+
+Hibernate ORM is concerned with helping your application to achieve persistence. So what is persistence? Persistence simply means that we would like our application’s data to outlive the applications process. In Java terms, we would like the state of (some of) our objects to live beyond the scope of the JVM so that the same state is available later.
