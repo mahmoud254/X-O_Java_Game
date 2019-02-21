@@ -5,3 +5,7 @@ for server project :
 3-	before running server connect to the derby database from netbeans
 for the client:
 1-	 you will run the project directly
+
+controllers
+1-networkcontroller.java
+2-clientcontroller.java
